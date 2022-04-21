@@ -1,0 +1,124 @@
+<?php
+
+$error_reporting(0);
+$msg = '';
+
+ if (isset($_POST['submit'])){
+     $name = trim($_POST['name']);
+     $mailFrom = trim($_POST['email']);
+     $subject = trim($_POST['subject']);
+     $message = trim($_POST['message']);
+
+   //   $subject = "<strong>".$subject."</strong>"
+
+     // "rfheller4@gmail.com"
+    $mailTo = "rfheller4@gmail.com";
+    $headers = "From: ".$mailFrom;
+    $txt = "You have received an e-mail from ".$name.".\n\n".$message;
+
+
+    $secretKey = "6LePAvoaAAAAAJAp3epxQYuzjdZghLbhowy9GeSU";
+    $responseKey = $_POST["g-recaptcha-response"];
+
+    $url = "https://www.google.com/recaptcha/api/siteverify?secret=$secretKey&response=$responseKey";
+
+    $response = file_get_contents($url);
+    $response = json_decode($response);
+
+    if ($response->success){
+      if (mail($mailTo, $subject, $txt, $headers)){
+         $msg = '<h4 class="succes">Mail sent successfully!</h4>';
+         header("Location:success.html");
+      }else {
+         $msg = '<h4 class="failed">Failed to send mail!</h4>';
+      }
+   } else {
+      $msg = '<h4 class="failed">Verification Failed!</h4>';
+   }
+
+   // mail($mailTo, $subject, $txt, $headers);
+     // Redirect
+   //  echo "Thank You!" . " -" . "<a href='./index.html' style='text-decoration:none;color:#ff0099;'> Return Home</a>";
+   //  header("Location:success.html");
+  } else {
+    echo "No information found \n";
+ }
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="../../assets/css/style.css" />
+		<link rel="icon" href="../../favicon.png" type="image/x-icon" />
+		<title>Peoples-uni</title>
+		<script src="https://smtpjs.com/v3/smtp.js"></script>
+	</head>
+	<body>
+		<a href="../../index.html" class="contact">Home</a>
+		<h3>Contact Form</h3>
+
+		<div class="container">
+			<form action="contact.php" method="POST" class="contact-form">
+				<label for="fname">Full Name</label>
+				<input
+					type="text"
+					id="fname"
+					name="name"
+					class="name"
+					placeholder="Your name.."
+				/>
+
+				<label for="email">E-mail</label>
+				<input
+					type="email"
+					id="email"
+					name="email"
+					class="email"
+					placeholder="Your email address.."
+				/>
+
+				<label for="subject">Subject</label>
+				<input
+					type="text"
+					id="subject"
+					name="subject"
+					class="subject"
+					placeholder="Subject..."
+				/>
+
+				<label for="subject">Message</label>
+				<textarea
+					id="message"
+					name="message"
+					class="message"
+					placeholder="Message.."
+					style="height: 200px"
+				></textarea>
+				<br />
+				<div
+					class="g-recaptcha"
+					data-sitekey="6LePAvoaAAAAAMSOq-GiD8Kn4CCrl6CODE3MJGbB"
+            ></div>
+            <div>
+               <?= $msg; ?>
+            </div>
+				<br />
+
+				<!-- <input type="submit" name="submit" value="Send Mail" /> -->
+				<button type="submit" name="submit" value="submit" class="btn">
+					Send Mail
+				</button>
+			</form>
+		</div>
+		<!-- <script src="contact.js"></script> -->
+		<script
+			src="https://www.google.com/recaptcha/api.js"
+			async
+			defer
+		></script>
+	</body>
+</html>
