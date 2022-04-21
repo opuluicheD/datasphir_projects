@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+ freeradius:
+  # image: "chrohrer/eduroam-flr:0.4"
+  image: "danielchucks/freeradius:0.1.3"
+  container_name: flr
+  restart: unless-stopped
+  ports:
+    - "1812:1812/udp"
+    - "1813:1813/udp"
+  volumes:
+    - ./radius/proxy.conf:/etc/raddb/proxy.conf
+    - ./radius/clients.conf:/etc/raddb/clients.conf
+    - ./radius/users:/etc/raddb/users
+  logging:
+    ##Debug with 'docker logs -f CONTAINERID'
+    driver: "json-file"
+    ##Centralized Log Analysis using Fluentd
+    # driver: "fluentd"
+    # options:
+    #   fluentd-address: 129.232.230.131:24224
+    #   tag: eduroam.flr-<tld>
+  networks:
+    - flrnet
+
+networks:
+  flrnet:

@@ -1,0 +1,2 @@
+alice  Cleartext-Password := "allegra"
+ Reply-Message := "Hello, %{User-Name}"

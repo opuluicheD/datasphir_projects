@@ -1,0 +1,55 @@
+version: "3.7"
+
+services:
+ freeradius:
+  image: "chrohrer/freeradius:0.4"
+  container_name: flr-<TLD>
+  deploy:
+    #mode: global
+    replicas: 1
+    placement:
+      constraints:
+        # Replace <TLD> with your actual tld, eg. mw
+        - "node.labels.component == flr-<TLD>"
+    resources:
+      limits:
+        cpus: "0.1"
+        memory: 500M
+    restart_policy:
+      condition: on-failure
+  ports:
+    - target: 1812
+      published: 1812
+      protocol: udp
+      mode: host
+  configs:
+    - source: proxy.conf
+      target: /etc/raddb/proxy.conf
+      gid: '101'
+    - source: clients.conf
+      target: /etc/raddb/clients.conf
+      gid: '101'
+    - source: users
+      target: /etc/raddb/users
+      gid: '101'
+  logging:
+    #Debug with 'docker logs -f CONTAINERID'
+    driver: "json-file"
+    # #Centralized Log Analysis using Fluentd
+    #driver: "fluentd"
+    #options:
+    #  fluentd-address: <IP ADDRESS>:24224
+    #  tag: eduroam.flr-<TLD>
+  networks:
+    - flrnet
+
+configs:
+  proxy.conf:
+    file: ./radius_mw/proxy.conf
+  clients.conf:
+    file: ./radius_mw/clients.conf
+  users:
+    file: ./radius_mw/users
+
+networks:
+  flrnet:

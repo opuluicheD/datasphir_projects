@@ -1,0 +1,45 @@
+client localhost {
+  ipaddr                        = 127.0.0.1
+  proto                         = udp
+  secret                        = testing123
+  require_message_authenticator = yes
+  nas_type                      = other
+}
+
+
+### Downstream ###
+
+# client MY_INSTITUTION {
+#   ipaddr                        = 123.456.789.1
+#   proto                         = udp
+#   secret                        = INSTITUTION_SECRET
+#   require_message_authenticator = yes
+#   nas_type                      = other
+# }
+
+
+### Upstream ###
+
+client rps.wacren.net {
+  ipaddr                        = 196.216.209.29
+  proto                         = udp
+  secret                        = RPSSECRET
+  require_message_authenticator = yes
+  nas_type                      = other
+}
+
+client rps.ubuntunet.net {
+  ipaddr                        = 196.32.213.90
+  proto                         = udp
+  secret                        = RPSSECRET
+  require_message_authenticator = yes
+  nas_type                      = other
+}
+
+client SA5-monitoring {
+  ipaddr                        = 161.53.2.204
+  proto                         = udp
+  secret                        = MONITORINGSECRET
+  require_message_authenticator = yes
+  nas_type                      = other
+}
